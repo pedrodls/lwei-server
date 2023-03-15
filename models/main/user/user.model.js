@@ -33,5 +33,19 @@ module.exports = ({
         }]
     });
 
+    User.associate = (models) => {
+
+        User.belongsTo(models.TypeAccount, {
+            as: 'typeAccount',
+            foreignKey: 'typeAccountId'
+        });
+
+        User.belongsTo(models.PersonalData, {
+            as: 'personalData',
+            foreignKey: 'personalDataId'
+        });
+
+    };
+    
     return User;
 };

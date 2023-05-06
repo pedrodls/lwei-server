@@ -28,7 +28,8 @@ app.set('address', process.env.ADDRESS);
 app.use(cors(corsOption));
 
 //------------------------------------------------------------------
-//-----------------------aplicações--------------------------------
+//-----------------------aplicações---------------------------------
+
 app.use(express.urlencoded({
     extended: true
 }));

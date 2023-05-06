@@ -1,3 +1,4 @@
+const professionalTypeRoute = require("./professional-type/professional-type.routes")
 const typeAccountRouter = require("./type-account/type-account.routes")
 const userRouter = require("./users/user.routes")
 
@@ -10,6 +11,8 @@ mainRouter.get("/", (req, res) => {
 
 mainRouter.use("/type-accounts", typeAccountRouter)
 
-mainRouter.use("users", userRouter)
+mainRouter.use("/professional-type", professionalTypeRoute)
+
+mainRouter.use("/users", userRouter)
 
 module.exports = mainRouter 

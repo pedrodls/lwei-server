@@ -32,6 +32,8 @@ exports.userSetToken = (req, user) => {
 
     let token = this.generateUserAuthToken(user)
 
+    req.cookie = token
+    
     return {
         data: {
             user: {
@@ -44,7 +46,7 @@ exports.userSetToken = (req, user) => {
             error: false,
             status: 200
         },
-        token: token
+        //token: token
     };
 
 }

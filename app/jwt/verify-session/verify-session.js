@@ -12,7 +12,7 @@ const {
 require('dotenv').config()
 
 
-exports.ip = (req) => req.headers[jwtConstants.ip] ||
+exports.ip = (req) => 
     req.connection.remoteAddress;
 
 
@@ -36,7 +36,7 @@ exports.userVerifyToken = async (req, res) => {
                         // Verify only cookie here
 
                         
-                       /*  const session = await User.findOne({
+                        const session = await User.findOne({
                             where: {
                                 email: decode.email,
                                 isActive: true
@@ -50,7 +50,7 @@ exports.userVerifyToken = async (req, res) => {
                                 message: 'Sessão Activa'
                             })
                         else
-                            expiredSessionMessage(res) */
+                            expiredSessionMessage(res)
 
 
                     } else

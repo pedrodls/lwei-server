@@ -35,9 +35,9 @@ module.exports = ({
 
     User.associate = (models) => {
 
-        User.hasMany(models.TypeAccount, {
-            as: 'typeAccounts',
-            foreignKey: 'typeAccountsId'
+        User.belongsTo(models.TypeAccount, {
+            as: 'typeAccount',
+            foreignKey: 'typeAccountId'
         });
 
         User.belongsTo(models.PersonalData, {

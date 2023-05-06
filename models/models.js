@@ -22,8 +22,10 @@ db.User = require('./main/user/user.model')(db)
 db.PersonalData = require('./main/user/personal-data/personal-data.model')(db)
 db.ProfessionalData = require('./main/user/professional-data/professional-data.model')(db)
 db.AddressData = require('./main/user/address-data/address-data.model')(db)
+
 db.TypeAccount = require('./main/type-account/type-account.model')(db)
 
+db.ProfessionalType = require('./main/user/professional-type/professional-type.model')(db)
 
 //-------------------------Associação dos Modelos----------------------------
 Object.keys(db).forEach(key => {
@@ -34,7 +36,7 @@ Object.keys(db).forEach(key => {
 //------------------------- Sincronizando -----------------------------------
 sequelize.sync({
     force: false,
-    alter: true
+    alter: false
 })
 //--------------------------------------------------------------------------
 module.exports = db;

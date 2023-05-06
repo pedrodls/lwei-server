@@ -11,16 +11,39 @@ module.exports = ({
             defaultValue: Sequelize.UUIDV4,
             primaryKey: true
         },
-        description: {
+        occupation: {
             type: Sequelize.STRING,
             allowNull: false,
-            unique: true
+        }, 
+        patronalEntity: {
+            type: Sequelize.STRING,
+            allowNull: false,
+        }, 
+        address: {
+            type: Sequelize.STRING,
+            allowNull: false,
+        }, 
+        town: {
+            type: Sequelize.STRING,
+            allowNull: false,
+        }, 
+        country: {
+            type: Sequelize.STRING,
+            allowNull: false,
         }, 
         isActive: {
             type: Sequelize.BOOLEAN,
             defaultValue: true
         }
     });
+
+    ProfessionalData.associate = (models) => {
+
+        ProfessionalData.belongsTo(models.ProfessionalType, {
+            as: 'professionalType',
+            foreignKey: 'professionalTypeId'
+        });
+    }
 
     return ProfessionalData;
 };

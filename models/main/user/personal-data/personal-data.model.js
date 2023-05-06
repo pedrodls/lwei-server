@@ -10,13 +10,17 @@ module.exports = ({
             type: Sequelize.CHAR(14),
             primaryKey: true
         },
+        passaporte: {
+            type: Sequelize.CHAR(8),
+            allowNull: true
+        },
         fullName: {
             type: Sequelize.STRING,
             allowNull: false,
         },
         avatar: {
             type: Sequelize.STRING,
-            allowNull: false,
+            allowNull: true,
         },
         birthdate: {
             type: Sequelize.DATEONLY,

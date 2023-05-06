@@ -19,8 +19,10 @@ db.Op = Op
 
 
 db.User = require('./main/user/user.model')(db)
-db.User = require('./main/personal-data/personal-data.model')(db)
-db.User = require('./main/type-account/type-account.model')(db)
+db.PersonalData = require('./main/user/personal-data/personal-data.model')(db)
+db.ProfessionalData = require('./main/user/professional-data/professional-data.model')(db)
+db.AddressData = require('./main/user/address-data/address-data.model')(db)
+db.TypeAccount = require('./main/type-account/type-account.model')(db)
 
 
 //-------------------------Associação dos Modelos----------------------------
@@ -31,8 +33,8 @@ Object.keys(db).forEach(key => {
 //---------------------------------------------------------------------------
 //------------------------- Sincronizando -----------------------------------
 sequelize.sync({
-    force: true,
-    alter: false
+    force: false,
+    alter: true
 })
 //--------------------------------------------------------------------------
 module.exports = db;

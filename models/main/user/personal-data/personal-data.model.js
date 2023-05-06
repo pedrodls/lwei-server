@@ -4,8 +4,6 @@ module.exports = ({
     Sequelize
 }) => {
     
-    //Dados pessoais de todos os usuários do sistema (bilhete, nome completo, data de nascimento, sexo)
-
     const PersonalData = sequelize.define("personal_data", {
 
         bi: {

@@ -35,14 +35,24 @@ module.exports = ({
 
     User.associate = (models) => {
 
-        User.belongsTo(models.TypeAccount, {
-            as: 'typeAccount',
-            foreignKey: 'typeAccountId'
+        User.hasMany(models.TypeAccount, {
+            as: 'typeAccounts',
+            foreignKey: 'typeAccountsId'
         });
 
         User.belongsTo(models.PersonalData, {
             as: 'personalData',
             foreignKey: 'personalDataId'
+        });
+
+        User.belongsTo(models.ProfessionalData, {
+            as: 'professionalData',
+            foreignKey: 'professionalDataId'
+        });
+
+        User.belongsTo(models.AddressData, {
+            as: 'addressData',
+            foreignKey: 'addressDataId'
         });
 
     };

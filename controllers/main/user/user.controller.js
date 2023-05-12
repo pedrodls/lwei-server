@@ -1,38 +1,44 @@
 const passHash = require("../../../app/generate/passHash");
 const { UserAuth } = require("../../../app/jwt/auth/auth");
+const { google } = require("googleapis");
+
 const {
-    User, ProfessionalData, PersonalData, AddressData, TypeAccount
+  User,
+  ProfessionalData,
+  PersonalData,
+  AddressData,
+  TypeAccount,
 } = require("../../../models/models");
 
-const bcrypt = require('bcrypt')
+const bcrypt = require("bcrypt");
 
+const dataProvider = require("../../../providers/google/auth.connection");
+const authConnection = require("../../../providers/google/auth.connection");
 
-exports.all = async (req, res) => {
-
-
-
-}
+exports.all = async (req, res) => {};
 
 const invalidCredencial = (res) => {
-    return res.status(404).json({
-        error: true,
-        message: "Credenciais Inválidas",
-        status: 404
-    });
-}
+  return res.status(404).json({
+    error: true,
+    message: "Credenciais Inválidas",
+    status: 404,
+  });
+};
 
 const bloquedCredencial = (res) => {
-    return res.status(404).json({
-        error: true,
-        message: "Credenciais Bloqueadas",
-        status: 404
-    });
-}
+  return res.status(404).json({
+    error: true,
+    message: "Credenciais Bloqueadas",
+    status: 404,
+  });
+};
 
 
 exports.authentication = async (req, res, next) => {
 
-    let countUserFound = 0;
+  await dataProvider.authConnect(req, res, next);
+
+  /* let countUserFound = 0;
 
     const users = await User.findAll({
         where: {
@@ -69,39 +75,31 @@ exports.authentication = async (req, res, next) => {
             } else if (countUserFound === users.length)
                 invalidCredencial(res)
 
-        });
-}
+        }); */
+};
 
 exports.create = async (req, res) => {
+  let { professionalData, personalData, addressData } = req.body;
 
-    let {
-        professionalData,
-        personalData,
-        addressData
-    } = req.body;
+  req.body.password = await passHash().then((data) => {
+    req.body.realPassword = data[0].password;
 
+    return data[0].passHashed;
+  });
 
-    req.body.password = await passHash().then(data => {
+  professionalData = await ProfessionalData.create(professionalData);
 
-        req.body.realPassword = (data[0]).password
+  personalData = await PersonalData.create(personalData);
 
-        return (data[0]).passHashed
-    })
-    
-    professionalData = await ProfessionalData.create(professionalData)
+  addressData = await AddressData.create(addressData);
 
-    personalData = await PersonalData.create(personalData)
+  req.body.professionalDataId = professionalData.id;
+  req.body.personalDataId = personalData.id;
+  req.body.addressDataId = addressData.id;
 
-    addressData = await AddressData.create(addressData)
+  const user = await User.create(req.body).catch((err) => err);
 
-    req.body.professionalDataId = professionalData.id
-    req.body.personalDataId = personalData.id
-    req.body.addressDataId = addressData.id
+  console.log(req.body.realPassword);
 
-    const user = await User.create(req.body).catch(err => err)
-
-    console.log(req.body.realPassword);
-    
-    return res.json(user);
-
-}
+  return res.json(user);
+};

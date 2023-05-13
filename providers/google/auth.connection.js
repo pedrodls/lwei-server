@@ -4,7 +4,7 @@ const fs = require("fs");
 
 const creds = fs.readFileSync("credentials.json");
 
-async function authConnection() {
+exports.authConnection = async () => {
 
   const auth = new google.auth.OAuth2(
     process.env.CLIENT_ID,
@@ -19,7 +19,7 @@ async function authConnection() {
 
 exports.googleOauth = async (req, res, next) => {
 
-  const auth = await authConnection();
+  const auth = await this.authConnection();
 
   const { code } = req.query;
 
@@ -27,20 +27,20 @@ exports.googleOauth = async (req, res, next) => {
 
   auth.setCredentials(tokens)
 
-  fs.writeFileSync("credentials.json", JSON.stringify(tokens))
+  fs.appendFileSync("credentials.json", JSON.stringify(tokens))
 
-  
   res.send(tokens);
 
 };
 
 exports.authConnect = async (req, res, next) => {
-  const auth = await authConnection();
+  const auth = await this.authConnection();
 
   const url = auth.generateAuthUrl({
     acessType: "offline",
-    scope: ["https://www.googleapis.com/auth/userinfo.profile"],
+    scope: ["https://www.googleapis.com/auth/spreadsheets"],
   });
 
   res.redirect(url)
+  
 };

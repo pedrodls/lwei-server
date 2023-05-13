@@ -1,6 +1,4 @@
 const passHash = require("../../../app/generate/passHash");
-const { UserAuth } = require("../../../app/jwt/auth/auth");
-const { google } = require("googleapis");
 
 const {
   User,
@@ -13,7 +11,6 @@ const {
 const bcrypt = require("bcrypt");
 
 const dataProvider = require("../../../providers/google/auth.connection");
-const authConnection = require("../../../providers/google/auth.connection");
 
 exports.all = async (req, res) => {};
 
@@ -33,49 +30,48 @@ const bloquedCredencial = (res) => {
   });
 };
 
+exports.authWithGoogle = async (req, res, next) => {
+  await dataProvider.authConnect(req, res, next);
+};
 
 exports.authentication = async (req, res, next) => {
+  let countUserFound = 0;
 
-  await dataProvider.authConnect(req, res, next);
+  const users = await User.findAll({
+    where: {
+      email: req.body.email,
+      isActive: true,
+    },
+    include: [
+      {
+        model: TypeAccount,
+        as: "typeAccount",
+      },
+      {
+        model: PersonalData,
+        as: "personalData",
+      },
+    ],
+  })
+    .then((u) => u)
+    .catch((err) => []);
 
-  /* let countUserFound = 0;
+  if (users.length === 0) invalidCredencial(res);
+  else
+    users.forEach(async (user) => {
+      countUserFound++;
 
-    const users = await User.findAll({
-        where: {
-            email: req.body.email,
-            isActive: true
-        },
-        include: [{
-            model: TypeAccount,
-            as: 'typeAccount'
-        }, {
-            model: PersonalData,
-            as: 'personalData'
-        }]
-    }).then(u => u).catch(err => []);
+      if (
+        (await bcrypt.compare(req.body.password, user.password)) &&
+        req.body.email === user.email
+      ) {
+        if (user.isActive) {
+          req.user = user;
 
-    if (users.length === 0)
-        invalidCredencial(res)
-    else
-        users.forEach(async (user) => {
-
-            countUserFound++
-
-            if (await bcrypt.compare(req.body.password, user.password) && req.body.email === user.email) {
-
-                if (user.isActive) {
-
-                    req.user = user;
-
-                    next()
-
-                } else
-                    bloquedCredencial(res)
-
-            } else if (countUserFound === users.length)
-                invalidCredencial(res)
-
-        }); */
+          next();
+        } else bloquedCredencial(res);
+      } else if (countUserFound === users.length) invalidCredencial(res);
+    });
 };
 
 exports.create = async (req, res) => {
